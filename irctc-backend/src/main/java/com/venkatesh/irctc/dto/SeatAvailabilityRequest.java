@@ -1,12 +1,17 @@
 package com.venkatesh.irctc.dto;
 
 import java.time.LocalDate;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 public class SeatAvailabilityRequest {
+	@Min(1)
 	private long trainId;
 	
+	@NotNull
 	private LocalDate traveldate;
 	
+	@Min(0)
 	private int availableSeats;
 	
 	// getters and setters

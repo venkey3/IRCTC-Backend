@@ -20,18 +20,21 @@ public class Booking {
 	private long id;
 	
 	
+	@jakarta.persistence.Column(nullable = false)
 	private LocalDate travelDate;
 	
+	@jakarta.persistence.Column(nullable = false)
 	private int seatsBooked;
 	
+	@jakarta.persistence.Column(nullable = false)
 	private String status;
 	
 	@ManyToOne
-	@JoinColumn(name="user_id")
+	@JoinColumn(name="user_id", nullable = false)
 	private User user;
 	
 	@ManyToOne
-	@JoinColumn(name="train_id")
+	@JoinColumn(name="train_id", nullable = false)
 	private Train train;
 	
 	private LocalDate createdAt = LocalDate.now();

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.venkatesh.irctc.dto.BookingResponse;
 import com.venkatesh.irctc.entity.Booking;
@@ -23,6 +24,8 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class BookingService {
+	@Value("${booking.window.days:60}")
+	private int bookingWindowDays;
 	
 	@Autowired
 	private TrainSeatAvailabilityRepository seatRepo;
@@ -45,6 +48,19 @@ public class BookingService {
 	@Transactional
 	public BookingResponse bookTicket(Long trainId, LocalDate date, int seats) {
 		
+		if (seats <= 0) {
+			throw new IllegalArgumentException("Seats must be greater than 0");
+		}
+		if (date == null) {
+			throw new IllegalArgumentException("Travel date is required");
+		}
+		if (date.isBefore(LocalDate.now())) {
+			throw new IllegalArgumentException("Cannot book for past date");
+		}
+		if (date.isAfter(LocalDate.now().plusDays(bookingWindowDays))) {
+			throw new IllegalArgumentException("Travel date is outside the booking window of " + bookingWindowDays + " days");
+		}
+
 		TrainSeatAvailability availability =
                 seatRepo.findSeatForUpdate(trainId, date);
 		
@@ -56,14 +72,6 @@ public class BookingService {
 		if(availability.getAvailableSeats()< seats) {
 			throw new RuntimeException(" Not enough seats available");
 			
-		}
-		
-		if(seats <=0) {
-			throw new RuntimeException("Seats must be greater than 0");
-		}
-		
-		if(date.isBefore(LocalDate.now())) {
-			throw new RuntimeException("Cannot book for past date");
 		}
 		
 		availability.setAvailableSeats(availability.getAvailableSeats() - seats);

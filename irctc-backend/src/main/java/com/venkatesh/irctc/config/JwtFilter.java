@@ -1,10 +1,10 @@
 package com.venkatesh.irctc.config;
 
 import java.io.IOException;
-import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -44,8 +44,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
             token = authHeader.substring(7);
 
-            username = jwtUtil.extractUsername(token);
-        }
+            try {
+                username = jwtUtil.extractUsername(token);
+            } catch (io.jsonwebtoken.JwtException | IllegalArgumentException ex) {
+                SecurityContextHolder.clearContext();
+            }
+        }	
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
@@ -57,7 +61,7 @@ public class JwtFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(
                                 user.getUsername(),
                                 null,
-                                Collections.emptyList()
+                                AuthorityUtils.createAuthorityList(user.getRole())
                         );
 
                 authToken.setDetails(

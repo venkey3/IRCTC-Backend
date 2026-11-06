@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 import com.venkatesh.irctc.entity.Train;
 import com.venkatesh.irctc.service.TrainService;
@@ -24,7 +25,7 @@ public class TrainController {
 	private TrainService trainService;
 	
 	@PostMapping
-	public ResponseEntity<?> addTrain(@RequestBody Train train){
+	public ResponseEntity<?> addTrain(@Valid @RequestBody Train train){
 		Train savedTrain = trainService.addTrain(train);
         return ResponseEntity.ok(savedTrain);
 	}

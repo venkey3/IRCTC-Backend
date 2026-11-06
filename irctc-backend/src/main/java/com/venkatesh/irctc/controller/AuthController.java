@@ -34,9 +34,7 @@ public class AuthController {
 	private PasswordEncoder passwordEncoder;
 	
 	@PostMapping("/register")
-	public ResponseEntity<String> register( @RequestBody RegisterRequest request){
-		
-		System.out.println("Controller Invoked");
+	public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request){
 		
 		authservice.register(request);
 		
@@ -47,7 +45,7 @@ public class AuthController {
 	}
 	
 	@PostMapping("/login")
-	public ResponseEntity<?> login( @RequestBody LoginRequest request){
+	public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request){
 
 	    String token = authservice.login(request);
 

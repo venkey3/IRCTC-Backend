@@ -23,21 +23,25 @@ public class TrainSeatAvailabilityService {
 	private TrainSeatAvailabilityRepository seatRepository;
 	
 	public TrainSeatAvailability createSeatAvailability(@RequestBody SeatAvailabilityRequest Request) {
-		
-		Train train = trainRepository.findById(Request.getTrainId())
-				.orElseThrow(() -> new IllegalStateException("Train not found"));
-		
-		if(seatRepository.findByTrainIdAndTravelDate(Request.getTrainId(), Request.getTraveldate()).isPresent()) {
-			
-			throw new IllegalStateException("Seat Availibilty already exists for this train and date");
-		}
-		
 		if (Request.getTraveldate() == null) {
 		    throw new IllegalStateException("Travel date cannot be null");
 		}
 
 		if (Request.getTraveldate().isBefore(LocalDate.now())) {
 		    throw new IllegalStateException("You cannot add for previous days");
+		}
+		if (Request.getAvailableSeats() < 0) {
+			throw new IllegalStateException("Available seats cannot be negative");
+		}
+
+		Train train = trainRepository.findById(Request.getTrainId())
+				.orElseThrow(() -> new IllegalStateException("Train not found"));
+		if (Request.getAvailableSeats() > train.getTotalSeats()) {
+			throw new IllegalStateException("Available seats cannot exceed train capacity");
+		}
+
+		if(seatRepository.findByTrainIdAndTravelDate(Request.getTrainId(), Request.getTraveldate()).isPresent()) {
+			throw new IllegalStateException("Seat Availability already exists for this train and date");
 		}
 
 		 

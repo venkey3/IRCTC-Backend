@@ -6,8 +6,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 @Entity
-@Table(name="trains")
+@Table(name="trains", uniqueConstraints = @UniqueConstraint(
+		name = "uk_trains_train_number", columnNames = "train_number"))
 public class Train {
 	
 	
@@ -15,19 +19,24 @@ public class Train {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@Column(name = "train_number")
+	@NotBlank
+	@Column(name = "train_number", nullable = false)
     private String trainNumber;
 
-    @Column(name = "train_name")
+	@NotBlank
+	@Column(name = "train_name", nullable = false)
     private String trainName;
 
-    @Column(name = "source")
+	@NotBlank
+	@Column(name = "source", nullable = false)
     private String source;
 
-    @Column(name = "destination")
+	@NotBlank
+	@Column(name = "destination", nullable = false)
     private String destination;
 
-    @Column(name = "total_seats")
+	@Min(1)
+	@Column(name = "total_seats", nullable = false)
     private int totalSeats;
 
 

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 import com.venkatesh.irctc.dto.SeatAvailabilityRequest;
 import com.venkatesh.irctc.entity.TrainSeatAvailability;
@@ -19,7 +20,7 @@ public class TrainSeatAvailabilityController {
 	private TrainSeatAvailabilityService seatService;
 	
 	@PostMapping
-	public ResponseEntity<?> createSeatAvailbility(@RequestBody SeatAvailabilityRequest request){
+	public ResponseEntity<?> createSeatAvailbility(@Valid @RequestBody SeatAvailabilityRequest request){
 		
 		TrainSeatAvailability availbility = seatService.createSeatAvailability(request);
 		return ResponseEntity.ok(availbility) ;
