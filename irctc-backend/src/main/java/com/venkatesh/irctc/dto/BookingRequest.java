@@ -1,40 +1,53 @@
 package com.venkatesh.irctc.dto;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import com.venkatesh.irctc.entity.TravelClass;
 
 public class BookingRequest {
-	
-	
-	private Long trainId;
-	
-	private LocalDate travelDate;
-	
-	private int seatsRequired;
 
-	public Long getTrainId() {
-		return trainId;
-	}
+    @NotNull
+    @Positive
+    private Long trainId;
 
-	public void setTrainId(Long trainId) {
-		this.trainId = trainId;
-	}
+    @NotNull
+    private LocalDate travelDate;
 
-	public LocalDate getTravelDate() {
-		return travelDate;
-	}
+    @NotEmpty
+    @Valid
+    private List<PassengerRequest> passengers;
 
-	public void setTravelDate(LocalDate travelDate) {
-		this.travelDate = travelDate;
-	}
+    private TravelClass travelClass = TravelClass.SLEEPER;
 
-	public int getSeatsRequired() {
-		return seatsRequired;
-	}
+    public Long getTrainId() {
+        return trainId;
+    }
 
-	public void setSeatsRequired(int seatsRequired) {
-		this.seatsRequired = seatsRequired;
-	}
-	
-	
+    public void setTrainId(Long trainId) {
+        this.trainId = trainId;
+    }
 
+    public LocalDate getTravelDate() {
+        return travelDate;
+    }
+
+    public void setTravelDate(LocalDate travelDate) {
+        this.travelDate = travelDate;
+    }
+
+    public List<PassengerRequest> getPassengers() {
+        return passengers;
+    }
+
+    public void setPassengers(List<PassengerRequest> passengers) {
+        this.passengers = passengers;
+    }
+
+    public TravelClass getTravelClass() { return travelClass; }
+    public void setTravelClass(TravelClass travelClass) { this.travelClass = travelClass; }
 }

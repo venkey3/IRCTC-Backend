@@ -1,13 +1,18 @@
 package com.venkatesh.irctc.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -28,6 +33,13 @@ public class Booking {
 	
 	@jakarta.persistence.Column(nullable = false)
 	private String status;
+
+	@jakarta.persistence.Column(nullable = false, unique = true, length = 10)
+	private String pnr;
+
+	@jakarta.persistence.Enumerated(jakarta.persistence.EnumType.STRING)
+	@jakarta.persistence.Column(name = "travel_class", nullable = false, length = 16)
+	private TravelClass travelClass = TravelClass.SLEEPER;
 	
 	@ManyToOne
 	@JoinColumn(name="user_id", nullable = false)
@@ -36,6 +48,12 @@ public class Booking {
 	@ManyToOne
 	@JoinColumn(name="train_id", nullable = false)
 	private Train train;
+
+	@OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Passenger> passengers = new ArrayList<>();
+
+	@OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Payment payment;
 	
 	private LocalDate createdAt = LocalDate.now();
 
@@ -73,6 +91,12 @@ public class Booking {
 		this.status = status;
 	}
 
+	public String getPnr() { return pnr; }
+
+	public void setPnr(String pnr) { this.pnr = pnr; }
+	public TravelClass getTravelClass() { return travelClass; }
+	public void setTravelClass(TravelClass travelClass) { this.travelClass = travelClass; }
+
 	public LocalDate getCreatedAt() {
 		return createdAt;
 	}
@@ -95,6 +119,22 @@ public class Booking {
 
 	public void setTrain(Train train) {
 		this.train = train;
+	}
+
+	public List<Passenger> getPassengers() {
+		return passengers;
+	}
+
+	public Payment getPayment() { return payment; }
+
+	public void setPayment(Payment payment) {
+		this.payment = payment;
+		if (payment != null) payment.setBooking(this);
+	}
+
+	public void addPassenger(Passenger passenger) {
+		passengers.add(passenger);
+		passenger.setBooking(this);
 	}
 	
 	

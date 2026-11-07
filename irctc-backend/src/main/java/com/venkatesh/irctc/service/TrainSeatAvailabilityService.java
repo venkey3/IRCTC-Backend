@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.venkatesh.irctc.dto.SeatAvailabilityRequest;
 import com.venkatesh.irctc.entity.Train;
 import com.venkatesh.irctc.entity.TrainSeatAvailability;
+import com.venkatesh.irctc.entity.TravelClass;
 import com.venkatesh.irctc.repository.TrainRepository;
 import com.venkatesh.irctc.repository.TrainSeatAvailabilityRepository;
 
@@ -36,11 +37,14 @@ public class TrainSeatAvailabilityService {
 
 		Train train = trainRepository.findById(Request.getTrainId())
 				.orElseThrow(() -> new IllegalStateException("Train not found"));
-		if (Request.getAvailableSeats() > train.getTotalSeats()) {
+		TravelClass travelClass = Request.getTravelClass() == null ? TravelClass.SLEEPER : Request.getTravelClass();
+		int classCapacity = train.getSeatsForClass(travelClass);
+		if (classCapacity <= 0) throw new IllegalStateException("This train has no " + travelClass + " seats configured");
+		if (Request.getAvailableSeats() > classCapacity) {
 			throw new IllegalStateException("Available seats cannot exceed train capacity");
 		}
 
-		if(seatRepository.findByTrainIdAndTravelDate(Request.getTrainId(), Request.getTraveldate()).isPresent()) {
+		if(seatRepository.findByTrainIdAndTravelDateAndTravelClass(Request.getTrainId(), Request.getTraveldate(), travelClass).isPresent()) {
 			throw new IllegalStateException("Seat Availability already exists for this train and date");
 		}
 
@@ -50,6 +54,7 @@ public class TrainSeatAvailabilityService {
 		availbility.setTrain(train);
 		availbility.setAvailableSeats(Request.getAvailableSeats());
 		availbility.setTravelDate(Request.getTraveldate());
+		availbility.setTravelClass(travelClass);
 		
 		
 		

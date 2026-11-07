@@ -10,10 +10,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 
 @Entity
 @Table(name="train_seat_availability", uniqueConstraints = @UniqueConstraint(
-		name = "uk_seat_availability_train_date", columnNames = { "train_id", "travel_date" }))
+		name = "uk_seat_availability_train_date_class", columnNames = { "train_id", "travel_date", "travel_class" }))
 public class TrainSeatAvailability {
 	
 	@Id
@@ -25,6 +27,10 @@ public class TrainSeatAvailability {
 	
 	@jakarta.persistence.Column(nullable = false)
 	private int availableSeats;
+
+	@Enumerated(EnumType.STRING)
+	@jakarta.persistence.Column(name = "travel_class", nullable = false, length = 16)
+	private TravelClass travelClass = TravelClass.SLEEPER;
 	
 	@ManyToOne
 	@JoinColumn(name = "train_id", nullable = false)
@@ -53,6 +59,9 @@ public class TrainSeatAvailability {
 	public void setAvailableSeats(int availableSeats) {
 		this.availableSeats = availableSeats;
 	}
+
+	public TravelClass getTravelClass() { return travelClass; }
+	public void setTravelClass(TravelClass travelClass) { this.travelClass = travelClass; }
 
 	public Train getTrain() {
 		return train;

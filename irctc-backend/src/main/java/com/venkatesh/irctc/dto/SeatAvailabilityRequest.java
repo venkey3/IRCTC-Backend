@@ -3,6 +3,7 @@ package com.venkatesh.irctc.dto;
 import java.time.LocalDate;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import com.venkatesh.irctc.entity.TravelClass;
 
 public class SeatAvailabilityRequest {
 	@Min(1)
@@ -13,6 +14,8 @@ public class SeatAvailabilityRequest {
 	
 	@Min(0)
 	private int availableSeats;
+
+	private TravelClass travelClass = TravelClass.SLEEPER;
 	
 	// getters and setters
 	
@@ -40,6 +43,9 @@ public class SeatAvailabilityRequest {
 	public void setAvailableSeats(int availableSeats) {
 		this.availableSeats = availableSeats;
 	}
+
+	public TravelClass getTravelClass() { return travelClass; }
+	public void setTravelClass(TravelClass travelClass) { this.travelClass = travelClass; }
 	
 	
 

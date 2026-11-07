@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 
 import com.venkatesh.irctc.entity.Train;
+import com.venkatesh.irctc.entity.TravelClass;
 import com.venkatesh.irctc.service.TrainService;
 
 @RestController
@@ -43,10 +44,11 @@ public class TrainController {
 	@GetMapping("/availability")
 	public ResponseEntity<?> getAvailability(
 	        @RequestParam Long trainId,
-	        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+	        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+	        @RequestParam(defaultValue = "SLEEPER") TravelClass travelClass) {
 
 	    return ResponseEntity.ok(
-	            trainService.getSeatAvailibility(trainId, date)
+	            trainService.getSeatAvailibility(trainId, date, travelClass)
 	    );
 	}
 
