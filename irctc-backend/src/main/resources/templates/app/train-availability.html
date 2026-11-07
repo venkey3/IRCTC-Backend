@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Availability · Railway Portal</title>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+<main class="container page-shell py-4 py-lg-5">
+  <a class="text-decoration-none" th:href="@{/app/trains/search(source=${train.source},destination=${train.destination},date=${travelDate},travelClass=${travelClass})}">← Back to search</a>
+  <section class="surface-panel p-4 p-lg-5 mt-3">
+    <p class="eyebrow mb-2" th:text="${train.trainNumber}">Train number</p>
+    <h1 class="h2 page-heading" th:text="${train.trainName}">Train name</h1>
+    <p class="text-secondary" th:text="${train.source + ' → ' + train.destination}">Route</p>
+    <hr>
+    <div class="row g-3 align-items-center">
+      <div class="col-sm-3"><span class="small text-secondary d-block">Travel date</span><strong th:text="${#temporals.format(travelDate, 'EEE, d MMM yyyy')}">Date</strong></div>
+      <div class="col-sm-3"><span class="small text-secondary d-block">Available seats</span><strong class="fs-4" th:text="${availability.availableSeats}">0</strong></div>
+      <div class="col-sm-3"><span class="small text-secondary d-block">Class</span><strong th:text="${travelClass == T(com.venkatesh.irctc.entity.TravelClass).SLEEPER ? 'Sleeper' : 'AC'}">Class</strong></div>
+      <div class="col-sm-3"><span class="small text-secondary d-block">Fare per passenger</span><strong class="fs-5" th:text="${'₹' + #numbers.formatDecimal(travelClass == T(com.venkatesh.irctc.entity.TravelClass).SLEEPER ? train.sleeperFare : train.acFare, 1, 'COMMA', 2, 'POINT')}">Fare</strong></div>
+      <div class="col-sm-3 text-sm-end">
+        <a class="btn btn-primary" th:if="${availability.availableSeats > 0 and currentUsername != null and !currentUserIsAdmin}" th:href="@{/app/bookings/new(trainId=${train.id},date=${travelDate},travelClass=${travelClass})}">Continue to passengers</a>
+        <a class="btn btn-primary" th:if="${availability.availableSeats > 0 and currentUsername == null}" th:href="@{/login}">Sign in to book</a>
+        <span class="small text-secondary" th:if="${availability.availableSeats > 0 and currentUserIsAdmin}">Admin accounts manage trains and availability; they cannot book tickets.</span>
+        <span class="badge text-bg-secondary" th:if="${availability.availableSeats == 0}">Sold out</span>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Payment · Railway Portal</title>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+<main class="container page-shell py-4 py-lg-5">
+  <p class="eyebrow mb-2">Step 2 of 2</p><h1 class="h2 page-heading mb-4">Complete payment</h1>
+  <div class="row g-4">
+    <section class="col-lg-7">
+      <div class="surface-panel p-4 p-md-5">
+        <span class="badge rounded-pill text-bg-warning mb-3">Demo payment</span>
+        <h2 class="h5">Choose a demo method</h2>
+        <p class="text-secondary">This project simulates payment outcomes. It does not charge a real card or UPI account.</p>
+        <form th:action="@{/app/bookings/{id}/payment(id=${booking.bookingId})}" method="post">
+          <div class="form-check border rounded-3 p-3 ps-5 mb-3"><input class="form-check-input" type="radio" id="demoCard" name="paymentMethod" value="DEMO_CARD" checked><label class="form-check-label w-100" for="demoCard"><strong>Demo card</strong><span class="small text-secondary d-block">Simulated card authorization</span></label></div>
+          <div class="form-check border rounded-3 p-3 ps-5 mb-4"><input class="form-check-input" type="radio" id="demoUpi" name="paymentMethod" value="DEMO_UPI"><label class="form-check-label w-100" for="demoUpi"><strong>Demo UPI</strong><span class="small text-secondary d-block">Simulated UPI authorization</span></label></div>
+          <button class="btn btn-primary" name="successful" value="true" type="submit">Simulate successful payment</button>
+          <button class="btn btn-outline-secondary mt-2 mt-sm-0 ms-sm-2" name="successful" value="false" type="submit">Simulate payment failure</button>
+        </form>
+      </div>
+    </section>
+    <aside class="col-lg-5">
+      <section class="surface-panel p-4">
+        <p class="eyebrow mb-2">Booking summary</p><h2 class="h5" th:text="${booking.trainName}">Train name</h2>
+        <p class="text-secondary" th:text="${booking.trainNumber + ' · ' + (booking.travelClass == T(com.venkatesh.irctc.entity.TravelClass).SLEEPER ? 'Sleeper' : 'AC') + ' · ' + #temporals.format(booking.travelDate, 'EEE, d MMM yyyy')}">Train, class, and date</p>
+        <div class="d-flex justify-content-between mb-2"><span>Passengers</span><strong th:text="${booking.seatsBooked}">1</strong></div>
+        <div class="d-flex justify-content-between fs-5 border-top pt-3"><span>Total due</span><strong th:text="${'₹' + #numbers.formatDecimal(booking.paymentAmount, 1, 'COMMA', 2, 'POINT')}">₹0.00</strong></div>
+        <p class="small text-secondary mt-3 mb-0">Your booking is confirmed only after a successful payment outcome.</p>
+      </section>
+    </aside>
+  </div>
+</main>
+</body>
+</html>

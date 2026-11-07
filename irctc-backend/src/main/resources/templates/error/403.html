@@ -1,0 +1,5 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Access denied · Railway Portal</title><link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"><link rel="stylesheet" th:href="@{/css/app.css}"></head>
+<body><div th:replace="~{fragments/navigation :: navigation}"></div><main class="container page-shell py-5"><section class="surface-panel p-5 text-center"><p class="eyebrow">403 · Access denied</p><h1 class="h3">This page is for administrators</h1><p class="text-secondary">Your account does not have permission to open this page.</p><a class="btn btn-primary" th:href="@{/app/dashboard}">Return to dashboard</a></section></main></body>
+</html>

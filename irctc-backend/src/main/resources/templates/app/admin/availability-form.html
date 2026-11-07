@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seat availability · Railway Portal</title>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+<main class="container page-shell py-4 py-lg-5">
+  <p class="eyebrow mb-2">Administration</p><h1 class="h2 page-heading mb-4">Set seat availability</h1>
+  <section class="surface-panel p-4 p-md-5 col-lg-8">
+    <div class="alert alert-success" role="status" th:if="${successMessage}" th:text="${successMessage}"></div>
+    <div class="alert alert-danger" role="alert" th:if="${formError}" th:text="${formError}"></div>
+    <form th:action="@{/app/admin/availability}" th:object="${availabilityRequest}" method="post">
+      <div class="mb-3"><label class="form-label" for="trainId">Train</label><select class="form-select" th:field="*{trainId}" required><option value="0">Choose a train</option><option th:each="train : ${trains}" th:value="${train.id}" th:text="${train.trainNumber + ' · ' + train.trainName + ' (' + train.source + ' to ' + train.destination + ')'}">Train</option></select><div class="text-danger small" th:errors="*{trainId}"></div></div>
+      <div class="row g-3">
+        <div class="col-md-6"><label class="form-label" for="travelClass">Travel class</label><select class="form-select" id="travelClass" th:field="*{travelClass}" required><option th:each="travelClassOption : ${travelClasses}" th:value="${travelClassOption}" th:text="${travelClassOption == T(com.venkatesh.irctc.entity.TravelClass).SLEEPER ? 'Sleeper' : 'AC'}">Class</option></select></div>
+        <div class="col-md-6"><label class="form-label" for="traveldate">Travel date</label><input class="form-control" th:field="*{traveldate}" type="date" required><div class="text-danger small" th:errors="*{traveldate}"></div></div>
+        <div class="col-md-6"><label class="form-label" for="availableSeats">Available seats</label><input class="form-control" th:field="*{availableSeats}" type="number" min="0" required><div class="form-text">Cannot exceed the selected train's capacity for this class.</div><div class="text-danger small" th:errors="*{availableSeats}"></div></div>
+      </div>
+      <div class="d-flex justify-content-end mt-4"><button class="btn btn-primary" type="submit">Save availability</button></div>
+    </form>
+  </section>
+</main>
+</body>
+</html>

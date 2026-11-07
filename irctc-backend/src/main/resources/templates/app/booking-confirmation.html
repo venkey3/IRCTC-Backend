@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Booking confirmed · Railway Portal</title>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+<main class="container page-shell py-4 py-lg-5">
+  <section class="surface-panel p-4 p-md-5">
+    <span class="badge rounded-pill status-confirmed mb-3">Booking confirmed</span>
+    <h1 class="h2 page-heading">Your journey is booked</h1>
+    <p class="text-secondary">Keep your PNR to look up this ticket later.</p>
+    <div class="row g-3 my-3">
+      <div class="col-sm-6"><span class="small text-secondary d-block">PNR</span><strong class="font-monospace fs-5" th:text="${booking.pnr}">PNR</strong></div>
+      <div class="col-sm-6"><span class="small text-secondary d-block">Booking ID</span><strong th:text="${'#' + booking.bookingId}">Booking ID</strong></div>
+      <div class="col-sm-6"><span class="small text-secondary d-block">Status</span><strong th:text="${booking.status}">Status</strong></div>
+      <div class="col-sm-6" th:if="${booking.paymentAmount != null}"><span class="small text-secondary d-block">Payment</span><strong th:text="${booking.paymentStatus + ' · ₹' + #numbers.formatDecimal(booking.paymentAmount, 1, 'COMMA', 2, 'POINT')}">Payment status</strong></div>
+      <div class="col-sm-6" th:if="${booking.transactionReference != null}"><span class="small text-secondary d-block">Demo transaction reference</span><strong class="font-monospace" th:text="${booking.transactionReference}">Reference</strong></div>
+      <div class="col-sm-6" th:if="${booking.refundReference != null}"><span class="small text-secondary d-block">Demo refund reference</span><strong class="font-monospace" th:text="${booking.refundReference}">Refund reference</strong></div>
+      <div class="col-sm-6"><span class="small text-secondary d-block">Train</span><strong th:text="${booking.trainNumber + ' · ' + booking.trainName}">Train</strong></div>
+      <div class="col-sm-6"><span class="small text-secondary d-block">Travel class</span><strong th:text="${booking.travelClass == T(com.venkatesh.irctc.entity.TravelClass).SLEEPER ? 'Sleeper' : 'AC'}">Class</strong></div>
+      <div class="col-sm-6"><span class="small text-secondary d-block">Travel date</span><strong th:text="${#temporals.format(booking.travelDate, 'EEE, d MMM yyyy')}">Date</strong></div>
+    </div>
+    <h2 class="h5 mt-4">Passengers</h2>
+    <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Name</th><th>Age</th><th>Gender</th><th>Coach</th><th>Seat</th></tr></thead><tbody><tr th:each="passenger : ${booking.passengers}"><td th:text="${passenger.fullName}">Name</td><td th:text="${passenger.age}">Age</td><td th:text="${passenger.gender}">Gender</td><td th:text="${passenger.coachNumber != null ? passenger.coachNumber : 'Not assigned'}">Coach</td><td th:text="${passenger.seatNumber != null ? passenger.seatNumber : 'Not assigned'}">Seat</td></tr></tbody></table></div>
+    <div class="d-flex flex-wrap gap-2 mt-4"><a class="btn btn-primary" th:href="@{/app/bookings}">View my bookings</a><a class="btn btn-outline-secondary" th:href="@{/app/dashboard}">Back to dashboard</a></div>
+  </section>
+</main>
+</body>
+</html>

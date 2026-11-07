@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create account · Railway Portal</title>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+<main class="container page-shell py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <section class="surface-panel p-4 p-md-5">
+        <p class="eyebrow mb-2">Passenger account</p>
+        <h1 class="h3 page-heading mb-4">Create your account</h1>
+        <div class="alert alert-danger" role="alert" th:if="${registrationError}" th:text="${registrationError}"></div>
+        <form th:action="@{/register}" th:object="${registerRequest}" method="post">
+          <div class="mb-3">
+            <label class="form-label" for="username">Username</label>
+            <input class="form-control" th:field="*{username}" autocomplete="username" required>
+            <div class="text-danger small" th:errors="*{username}"></div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="email">Email address</label>
+            <input class="form-control" th:field="*{email}" type="email" autocomplete="email" required>
+            <div class="text-danger small" th:errors="*{email}"></div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label" for="password">Password</label>
+            <input class="form-control" th:field="*{password}" type="password" autocomplete="new-password" minlength="6" maxlength="20" required>
+            <div class="form-text">Use 6–20 characters.</div>
+            <div class="text-danger small" th:errors="*{password}"></div>
+          </div>
+          <button class="btn btn-primary btn-lg w-100" type="submit">Create account</button>
+        </form>
+        <p class="mb-0 mt-4 text-center">Already registered? <a th:href="@{/login}">Sign in</a></p>
+      </section>
+    </div>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in · Railway Portal</title>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+<main class="container page-shell py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-7 col-lg-5">
+      <section class="surface-panel p-4 p-md-5">
+        <p class="eyebrow mb-2">Welcome back</p>
+        <h1 class="h3 page-heading mb-4">Sign in to your account</h1>
+        <div class="alert alert-danger" role="alert" th:if="${param.error}">The username or password was not recognized.</div>
+        <div class="alert alert-success" role="status" th:if="${param.registered}">Account created. You can sign in now.</div>
+        <div class="alert alert-info" role="status" th:if="${param.logout}">You have signed out.</div>
+        <form th:action="@{/login}" method="post">
+          <div class="mb-3">
+            <label class="form-label" for="username">Username</label>
+            <input class="form-control form-control-lg" id="username" name="username" autocomplete="username" required autofocus>
+          </div>
+          <div class="mb-4">
+            <label class="form-label" for="password">Password</label>
+            <input class="form-control form-control-lg" id="password" name="password" type="password" autocomplete="current-password" required>
+          </div>
+          <button class="btn btn-primary btn-lg w-100" type="submit">Sign in</button>
+        </form>
+        <p class="mb-0 mt-4 text-center">New here? <a th:href="@{/register}">Create an account</a></p>
+      </section>
+    </div>
+  </div>
+</main>
+</body>
+</html>

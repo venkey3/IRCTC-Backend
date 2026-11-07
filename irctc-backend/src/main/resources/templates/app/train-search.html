@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Search trains · Railway Portal</title>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+<main class="container page-shell py-4 py-lg-5">
+  <p class="eyebrow mb-2">Plan a trip</p><h1 class="h2 page-heading mb-4">Search trains</h1>
+  <section class="surface-panel p-4 mb-4">
+    <form class="row g-3 align-items-end" th:action="@{/app/trains/search}" method="get">
+      <div class="col-md-3"><label class="form-label" for="source">From</label><input class="form-control" id="source" name="source" th:value="${source}" required></div>
+      <div class="col-md-3"><label class="form-label" for="destination">To</label><input class="form-control" id="destination" name="destination" th:value="${destination}" required></div>
+      <div class="col-md-2"><label class="form-label" for="travelClass">Class</label><select class="form-select" id="travelClass" name="travelClass"><option th:each="option : ${travelClasses}" th:value="${option}" th:selected="${option == travelClass}" th:text="${option == T(com.venkatesh.irctc.entity.TravelClass).SLEEPER ? 'Sleeper' : 'AC'}">Class</option></select></div>
+      <div class="col-md-2"><label class="form-label" for="date">Travel date</label><input class="form-control" id="date" name="date" type="date" th:value="${travelDate}" th:min="${minTravelDate}" th:max="${maxTravelDate}" required></div>
+      <div class="col-md-2 d-grid"><button class="btn btn-primary" type="submit">Search</button></div>
+    </form>
+    <div class="alert alert-danger mt-3" role="alert" th:if="${dateError}" th:text="${dateError}"></div>
+  </section>
+  <section th:if="${trains != null}">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3"><h2 class="h5 mb-0" th:text="${source + ' to ' + destination}">Route</h2><span class="text-secondary" th:text="${#lists.size(trains) + ' train(s) found'}">Results</span></div>
+    <div class="empty-state p-4" th:if="${#lists.isEmpty(trains)}"><h3 class="h6">No trains found for this route</h3><p class="text-secondary mb-0">Check the station names or try another route.</p></div>
+    <div class="surface-panel p-4 mb-3" th:each="train : ${trains}">
+      <div class="row align-items-center g-3">
+        <div class="col-md-6"><p class="eyebrow mb-1" th:text="${train.trainNumber}">Train number</p><h3 class="h5 mb-1" th:text="${train.trainName}">Train name</h3><span class="text-secondary" th:text="${train.source + ' → ' + train.destination}">Route</span></div>
+        <div class="col-md-3"><span class="small text-secondary d-block">Travel date</span><strong th:text="${travelDate}">Date</strong></div>
+        <div class="col-md-2"><span class="small text-secondary d-block" th:text="${travelClass == T(com.venkatesh.irctc.entity.TravelClass).SLEEPER ? 'Sleeper fare' : 'AC fare'}">Class fare</span><strong th:text="${'₹' + #numbers.formatDecimal(travelClass == T(com.venkatesh.irctc.entity.TravelClass).SLEEPER ? train.sleeperFare : train.acFare, 1, 'COMMA', 2, 'POINT')}">Fare</strong></div>
+        <div class="col-md-1 text-md-end"><a class="btn btn-outline-primary" th:if="${travelClass == T(com.venkatesh.irctc.entity.TravelClass).SLEEPER ? train.sleeperSeats > 0 : train.acSeats > 0}" th:href="@{/app/trains/{id}/availability(id=${train.id},date=${travelDate},travelClass=${travelClass})}">Check availability</a><span class="small text-secondary" th:unless="${travelClass == T(com.venkatesh.irctc.entity.TravelClass).SLEEPER ? train.sleeperSeats > 0 : train.acSeats > 0}">Class unavailable</span></div>
+      </div>
+    </div>
+  </section>
+  <p class="text-secondary" th:if="${trains == null}">Enter your route and travel date to see matching trains.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Add train · Railway Portal</title>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+<main class="container page-shell py-4 py-lg-5">
+  <a class="text-decoration-none" th:href="@{/app/admin/trains}">← Back to trains</a>
+  <section class="surface-panel p-4 p-md-5 mt-3 col-lg-9">
+    <p class="eyebrow mb-2">Administration</p><h1 class="h2 page-heading mb-4">Add a train</h1>
+    <div class="alert alert-danger" role="alert" th:if="${formError}" th:text="${formError}"></div>
+    <form th:action="@{/app/admin/trains}" th:object="${train}" method="post">
+      <div class="row g-3">
+        <div class="col-md-4"><label class="form-label" for="trainNumber">Train number</label><input class="form-control" th:field="*{trainNumber}" maxlength="30" required><div class="text-danger small" th:errors="*{trainNumber}"></div></div>
+        <div class="col-md-8"><label class="form-label" for="trainName">Train name</label><input class="form-control" th:field="*{trainName}" maxlength="100" required><div class="text-danger small" th:errors="*{trainName}"></div></div>
+        <div class="col-md-5"><label class="form-label" for="source">From</label><input class="form-control" th:field="*{source}" required><div class="text-danger small" th:errors="*{source}"></div></div>
+        <div class="col-md-5"><label class="form-label" for="destination">To</label><input class="form-control" th:field="*{destination}" required><div class="text-danger small" th:errors="*{destination}"></div></div>
+        <div class="col-md-3"><label class="form-label" for="sleeperSeats">Sleeper seats</label><input class="form-control" id="sleeperSeats" th:field="*{sleeperSeats}" type="number" min="0" required></div>
+        <div class="col-md-3"><label class="form-label" for="acSeats">AC seats</label><input class="form-control" id="acSeats" th:field="*{acSeats}" type="number" min="0" required></div>
+        <div class="col-md-3"><label class="form-label" for="sleeperFare">Sleeper fare (₹)</label><input class="form-control" id="sleeperFare" th:field="*{sleeperFare}" type="number" min="0.01" step="0.01" required><div class="text-danger small" th:errors="*{sleeperFare}"></div></div>
+        <div class="col-md-3"><label class="form-label" for="acFare">AC fare (₹)</label><input class="form-control" id="acFare" th:field="*{acFare}" type="number" min="0.01" step="0.01" required><div class="text-danger small" th:errors="*{acFare}"></div></div>
+        <div class="col-12"><div class="form-text">Set capacity and fare independently for each travel class. Total train capacity is calculated automatically.</div></div>
+      </div>
+      <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4"><a class="btn btn-outline-secondary" th:href="@{/app/admin/trains}">Cancel</a><button class="btn btn-primary" type="submit">Save train</button></div>
+    </form>
+  </section>
+</main>
+</body>
+</html>

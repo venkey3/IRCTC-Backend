@@ -1,0 +1,5 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Check your request · Railway Portal</title><link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"><link rel="stylesheet" th:href="@{/css/app.css}"></head>
+<body><div th:replace="~{fragments/navigation :: navigation}"></div><main class="container page-shell py-5"><section class="surface-panel p-5 text-center"><p class="eyebrow">Request not completed</p><h1 class="h3">Please review your request</h1><p class="text-secondary" th:text="${errorMessage ?: 'Check the information and try again.'}">Check the information and try again.</p><a class="btn btn-primary" th:href="@{/app/trains/search}">Search trains</a></section></main></body>
+</html>

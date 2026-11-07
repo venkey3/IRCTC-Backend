@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My bookings · Railway Portal</title>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+<main class="container page-shell py-4 py-lg-5">
+  <p class="eyebrow mb-2">Your journeys</p><h1 class="h2 page-heading mb-4">My bookings</h1>
+  <div class="alert alert-success" role="status" th:if="${successMessage}" th:text="${successMessage}"></div>
+  <div class="alert alert-danger" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+  <form class="surface-panel p-3 mb-4" th:action="@{/app/bookings}" method="get">
+    <label class="form-label" for="pnr">Find a ticket by PNR</label>
+    <div class="input-group"><input class="form-control" id="pnr" name="pnr" th:value="${pnrQuery}" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" placeholder="Enter your 10-digit PNR"><input type="hidden" name="view" th:value="${activeView}"><button class="btn btn-outline-primary" type="submit">Find ticket</button><a class="btn btn-outline-secondary" th:href="@{/app/bookings(view=${activeView})}">Clear</a></div>
+  </form>
+  <div class="alert alert-danger" role="alert" th:if="${pnrError}" th:text="${pnrError}"></div>
+  <nav class="nav nav-pills gap-2 mb-4" aria-label="Booking views">
+    <a class="nav-link" th:classappend="${activeView == 'upcoming'} ? 'active'" th:href="@{/app/bookings(view='upcoming')}">Upcoming</a>
+    <a class="nav-link" th:classappend="${activeView == 'past'} ? 'active'" th:href="@{/app/bookings(view='past')}">Past</a>
+    <a class="nav-link" th:classappend="${activeView == 'cancelled'} ? 'active'" th:href="@{/app/bookings(view='cancelled')}">Cancelled</a>
+    <a class="nav-link" th:classappend="${activeView == 'pending'} ? 'active'" th:href="@{/app/bookings(view='pending')}">Awaiting payment</a>
+    <a class="nav-link" th:classappend="${activeView == 'payment_failed'} ? 'active'" th:href="@{/app/bookings(view='payment_failed')}">Payment failed</a>
+    <a class="nav-link" th:classappend="${activeView == 'all'} ? 'active'" th:href="@{/app/bookings(view='all')}">All</a>
+  </nav>
+  <div class="empty-state p-4" th:if="${#lists.isEmpty(bookings)}"><h2 class="h6">No bookings in this view</h2><p class="text-secondary">Try another filter or search for a train.</p><a class="btn btn-primary" th:href="@{/app/trains/search}">Search trains</a></div>
+  <div class="surface-panel p-3 p-md-4 mb-3" th:each="booking : ${bookings}">
+    <div class="row align-items-center g-3">
+      <div class="col-md-2"><span class="eyebrow" th:text="${booking.trainNumber}">Train number</span><h2 class="h6 mb-0" th:text="${booking.trainName}">Train</h2></div>
+      <div class="col-6 col-md-2"><span class="small text-secondary d-block">Date</span><strong th:text="${#temporals.format(booking.travelDate, 'd MMM yyyy')}">Date</strong></div>
+      <div class="col-6 col-md-2"><span class="small text-secondary d-block">Passengers</span><strong th:text="${booking.passengers.size()}">Count</strong></div>
+      <div class="col-6 col-md-2"><span class="small text-secondary d-block">PNR</span><strong class="font-monospace" th:text="${booking.pnr}">PNR</strong></div>
+      <div class="col-6 col-md-1"><span class="small text-secondary d-block">Class</span><strong th:text="${booking.travelClass == T(com.venkatesh.irctc.entity.TravelClass).SLEEPER ? 'Sleeper' : 'AC'}">Class</strong></div>
+      <div class="col-6 col-md-1"><span class="badge rounded-pill" th:classappend="${booking.status == 'CONFIRMED'} ? 'status-confirmed' : 'text-bg-secondary'" th:text="${booking.status}">Status</span></div>
+      <div class="col-md-2 d-flex gap-2 justify-content-md-end"><a class="btn btn-outline-primary btn-sm" th:if="${booking.status != 'PENDING_PAYMENT'}" th:href="@{/app/bookings/{id}/confirmation(id=${booking.bookingId})}">Details</a><a class="btn btn-primary btn-sm" th:if="${booking.status == 'PENDING_PAYMENT'}" th:href="@{/app/bookings/{id}/payment(id=${booking.bookingId})}">Pay now</a><form th:if="${booking.status == 'CONFIRMED' and !booking.travelDate.isBefore(T(java.time.LocalDate).now())}" th:action="@{/app/bookings/{id}/cancel(id=${booking.bookingId})}" method="post"><button class="btn btn-outline-danger btn-sm" type="submit" onclick="return confirm('Cancel this booking?')">Cancel</button></form></div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin dashboard · Railway Portal</title>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+<main class="container page-shell py-4 py-lg-5">
+  <p class="eyebrow mb-2">Administration</p><h1 class="h2 page-heading mb-2">Operations dashboard</h1><p class="text-secondary mb-4">Manage train records and travel-date seat availability.</p>
+  <section class="surface-panel p-4 p-md-5 mb-4"><div class="row align-items-center g-3"><div class="col"><span class="small text-secondary d-block">Train records</span><strong class="display-6" th:text="${trainCount}">0</strong></div><div class="col-auto"><a class="btn btn-primary" th:href="@{/app/admin/trains/new}">Add train</a></div></div></section>
+  <div class="row g-3">
+    <div class="col-md-6"><a class="surface-panel d-block p-4 text-decoration-none text-reset h-100" th:href="@{/app/admin/trains}"><p class="eyebrow">Inventory</p><h2 class="h5">Manage trains</h2><p class="text-secondary mb-0">Review the train list and add a train to the system.</p></a></div>
+    <div class="col-md-6"><a class="surface-panel d-block p-4 text-decoration-none text-reset h-100" th:href="@{/app/admin/availability/new}"><p class="eyebrow">Capacity</p><h2 class="h5">Manage seat availability</h2><p class="text-secondary mb-0">Set the available seat count for a train and travel date.</p></a></div>
+  </div>
+</main>
+</body>
+</html>

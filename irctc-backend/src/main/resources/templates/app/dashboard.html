@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard · Railway Portal</title>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+<main class="container page-shell py-4 py-lg-5">
+  <div class="mb-4">
+    <p class="eyebrow mb-2">Passenger dashboard</p>
+    <h1 class="h2 page-heading">Welcome, <span th:text="${currentUsername}">traveler</span></h1>
+    <p class="text-secondary mb-0">Plan your next journey and keep your bookings in one place.</p>
+  </div>
+  <section class="surface-panel p-4 p-lg-5 mb-4">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-4"><p class="eyebrow mb-2">Start a journey</p><h2 class="h4 mb-0">Find your train</h2></div>
+      <div class="col-lg-8">
+        <form class="row g-3" th:action="@{/app/trains/search}" method="get">
+          <div class="col-md-5"><label class="form-label" for="source">From</label><input class="form-control" id="source" name="source" placeholder="Departure station" required></div>
+          <div class="col-md-5"><label class="form-label" for="destination">To</label><input class="form-control" id="destination" name="destination" placeholder="Arrival station" required></div>
+          <div class="col-md-5"><label class="form-label" for="travelClass">Class</label><select class="form-select" id="travelClass" name="travelClass"><option value="SLEEPER">Sleeper</option><option value="AC">AC</option></select></div>
+          <div class="col-md-5"><label class="form-label" for="date">Travel date</label><input class="form-control" id="date" name="date" type="date" th:min="${minTravelDate}" th:max="${maxTravelDate}" required></div>
+          <div class="col-md-2 d-flex align-items-end"><button class="btn btn-primary w-100" type="submit">Search</button></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <div class="row g-4">
+    <section class="col-lg-7">
+      <div class="d-flex justify-content-between align-items-center mb-3"><h2 class="h5 mb-0">Upcoming journeys</h2><a th:href="@{/app/bookings}">View bookings</a></div>
+      <div class="surface-panel p-4" th:if="${!#lists.isEmpty(upcomingBookings)}">
+        <article class="border-bottom py-3" th:each="booking : ${upcomingBookings}">
+          <div class="d-flex flex-wrap justify-content-between gap-2">
+            <div><p class="eyebrow mb-1" th:text="${booking.trainNumber + ' · ' + booking.trainName}">Train</p><h3 class="h6 mb-1" th:text="${#temporals.format(booking.travelDate, 'EEE, d MMM yyyy')}">Travel date</h3><span class="small text-secondary" th:text="${booking.passengers.size() + ' passenger(s)'}">Passenger count</span></div>
+            <a class="btn btn-outline-primary btn-sm align-self-center" th:href="@{/app/bookings/{id}/confirmation(id=${booking.bookingId})}">View booking</a>
+          </div>
+        </article>
+      </div>
+      <div class="empty-state p-4" th:if="${#lists.isEmpty(upcomingBookings)}"><h3 class="h6">No upcoming journeys</h3><p class="text-secondary">Search for a train to make your first booking.</p><a class="btn btn-primary" th:href="@{/app/trains/search}">Search trains</a></div>
+    </section>
+    <section class="col-lg-5">
+      <h2 class="h5 mb-3">Recent bookings</h2>
+      <div class="surface-panel p-4" th:if="${!#lists.isEmpty(recentBookings)}">
+        <div class="d-flex justify-content-between gap-3 py-2 border-bottom" th:each="booking : ${recentBookings}">
+          <div><div class="fw-semibold" th:text="${booking.trainName}">Train name</div><div class="small text-secondary" th:text="${'Booking #' + booking.bookingId}">Booking</div></div>
+          <span class="badge rounded-pill align-self-center" th:classappend="${booking.status == 'CONFIRMED'} ? 'status-confirmed' : 'text-bg-secondary'" th:text="${booking.status}">Status</span>
+        </div>
+      </div>
+      <div class="empty-state p-4" th:if="${#lists.isEmpty(recentBookings)}"><p class="text-secondary mb-0">Your completed bookings will appear here.</p></div>
+    </section>
+  </div>
+</main>
+</body>
+</html>

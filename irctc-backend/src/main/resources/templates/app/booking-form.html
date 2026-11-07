@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Passenger details · Railway Portal</title>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+<main class="container page-shell py-4 py-lg-5">
+  <p class="eyebrow mb-2">Step 1 of 2</p><h1 class="h2 page-heading mb-4">Passenger details</h1>
+  <div class="alert alert-danger" role="alert" th:if="${bookingError}" th:text="${bookingError}"></div>
+  <div class="row g-4">
+    <section class="col-lg-8">
+      <form th:action="@{/app/bookings}" th:object="${bookingRequest}" method="post">
+        <input type="hidden" th:field="*{trainId}"><input type="hidden" th:field="*{travelDate}"><input type="hidden" th:field="*{travelClass}">
+        <div class="text-danger small mb-2" th:errors="*{passengers}"></div>
+        <div data-passenger-list>
+          <fieldset class="passenger-row surface-panel p-3 p-md-4 mb-3" data-passenger-row th:each="passenger, idx : *{passengers}">
+            <div class="d-flex justify-content-between align-items-center mb-3"><legend class="h6 mb-0" th:text="${'Passenger ' + (idx.index + 1)}">Passenger</legend><button class="btn btn-outline-secondary btn-sm" type="button" data-remove-passenger>Remove</button></div>
+            <div class="row g-3">
+              <div class="col-md-6"><label class="form-label" th:for="${'passengers' + idx.index + '.fullName'}">Full name</label><input class="form-control" th:field="*{passengers[__${idx.index}__].fullName}" autocomplete="name" maxlength="100" required><div class="text-danger small" th:errors="*{passengers[__${idx.index}__].fullName}"></div></div>
+              <div class="col-6 col-md-3"><label class="form-label" th:for="${'passengers' + idx.index + '.age'}">Age</label><input class="form-control" th:field="*{passengers[__${idx.index}__].age}" type="number" min="0" max="120" required><div class="text-danger small" th:errors="*{passengers[__${idx.index}__].age}"></div></div>
+              <div class="col-6 col-md-3"><label class="form-label" th:for="${'passengers' + idx.index + '.gender'}">Gender</label><select class="form-select" th:field="*{passengers[__${idx.index}__].gender}" required><option value="">Select</option><option th:each="gender : ${genders}" th:value="${gender}" th:text="${gender}">Gender</option></select><div class="text-danger small" th:errors="*{passengers[__${idx.index}__].gender}"></div></div>
+            </div>
+          </fieldset>
+        </div>
+        <button class="btn btn-outline-primary mb-4" type="button" data-add-passenger>+ Add passenger</button>
+        <div class="d-flex flex-column flex-sm-row justify-content-between gap-2"><a class="btn btn-outline-secondary" th:href="@{/app/trains/{id}/availability(id=${train.id},date=${bookingRequest.travelDate},travelClass=${bookingRequest.travelClass})}">Back</a><button class="btn btn-primary" type="submit">Continue to payment</button></div>
+      </form>
+    </section>
+    <aside class="col-lg-4">
+      <section class="surface-panel p-4">
+        <p class="eyebrow mb-2">Journey summary</p><h2 class="h5" th:text="${train.trainName}">Train name</h2>
+        <p class="text-secondary mb-1" th:text="${train.trainNumber + ' · ' + train.source + ' → ' + train.destination}">Route</p>
+        <p class="mb-3" th:text="${dateLabel}">Travel date</p>
+        <p class="mb-3"><span class="text-secondary" th:text="${travelClass == T(com.venkatesh.irctc.entity.TravelClass).SLEEPER ? 'Sleeper fare per passenger' : 'AC fare per passenger'}">Class fare</span><br><strong th:text="${'₹' + #numbers.formatDecimal(farePerPassenger, 1, 'COMMA', 2, 'POINT')}">Fare</strong></p>
+        <hr><div class="d-flex justify-content-between"><span>Available seats</span><strong th:text="${availableSeats}">0</strong></div>
+        <p class="small text-secondary mt-3 mb-0">Each passenger in this form reserves one seat. Passenger count is checked against current availability when you submit.</p>
+      </section>
+    </aside>
+  </div>
+</main>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

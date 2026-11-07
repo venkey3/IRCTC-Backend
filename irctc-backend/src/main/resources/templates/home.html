@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Find your train · Railway Portal</title>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}"><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+<main>
+  <section class="hero-panel">
+    <div class="container page-shell">
+      <div class="row g-4 align-items-center">
+        <div class="col-lg-8">
+          <p class="text-uppercase fw-semibold small mb-3" style="color:#ffd28b;letter-spacing:.12em">Rail journeys, made simple</p>
+          <h1 class="mb-3">Find the right train for your next journey.</h1>
+          <p class="hero-copy mb-0">Search routes, check travel-date availability, and keep your bookings together.</p>
+        </div>
+      </div>
+      <div class="search-panel mt-4">
+        <form class="row g-3 align-items-end" th:action="@{/app/trains/search}" method="get">
+          <div class="col-md-3"><label class="form-label small fw-semibold" for="source">From</label><input class="form-control" id="source" name="source" placeholder="Departure station" required></div>
+          <div class="col-md-3"><label class="form-label small fw-semibold" for="destination">To</label><input class="form-control" id="destination" name="destination" placeholder="Arrival station" required></div>
+          <div class="col-md-2"><label class="form-label small fw-semibold" for="travelClass">Class</label><select class="form-select" id="travelClass" name="travelClass"><option value="SLEEPER">Sleeper</option><option value="AC">AC</option></select></div>
+          <div class="col-md-2"><label class="form-label small fw-semibold" for="date">Travel date</label><input class="form-control" id="date" name="date" type="date" th:min="${minTravelDate}" th:max="${maxTravelDate}" required></div>
+          <div class="col-md-2 d-grid"><button class="btn search-submit" type="submit">Search trains</button></div>
+        </form>
+      </div>
+    </div>
+  </section>
+  <section class="container page-shell feature-strip pb-5">
+    <div class="row g-3">
+      <div class="col-md-4"><article class="feature-item"><span class="feature-mark">01 · Search</span><h2 class="h6">Start with your route</h2><p class="text-secondary small mb-0">Find trains between the stations you choose.</p></article></div>
+      <div class="col-md-4"><article class="feature-item"><span class="feature-mark">02 · Availability</span><h2 class="h6">Check a travel date</h2><p class="text-secondary small mb-0">Review the available seats before entering passenger details.</p></article></div>
+      <div class="col-md-4"><article class="feature-item"><span class="feature-mark">03 · Bookings</span><h2 class="h6">Keep trips organized</h2><p class="text-secondary small mb-0">Sign in to book, view passenger details, or cancel an eligible trip.</p></article></div>
+    </div>
+    <footer class="text-center text-secondary small mt-5">Independent demonstration project · Not an official railway or ConfirmTkt website</footer>
+  </section>
+</main>
+</body>
+</html>
