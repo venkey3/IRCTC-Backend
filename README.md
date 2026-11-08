@@ -1,0 +1,5 @@
+Required Environment Variables
+
+JWT_SECRET
+RAZORPAY_KEY_ID
+RAZORPAY_KEY_SECRET
